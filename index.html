@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Raah - Connecting Farmers & Retailers, Seamlessly</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <link href="styles.css" rel="stylesheet">
+    <script src="animations.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Add this right after the opening body tag -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <!-- Navigation -->
+    <nav class="bg-green-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Krishi Raah</h1>
+            <div class="flex items-center space-x-4">
+                <a href="#home" class="hover:text-green-200">Home</a>
+                <a href="#products" class="hover:text-green-200">Products</a>
+                <a href="#farmers" class="hover:text-green-200">Farmers</a>
+                <a href="#contact" class="hover:text-green-200">Contact</a>
+                
+                <!-- Auth Buttons -->
+                <div id="authButtons" class="space-x-2">
+                    <button onclick="toggleModal('loginModal')" 
+                            class="bg-white text-green-600 px-4 py-1 rounded hover:bg-green-100">
+                        Login
+                    </button>
+                    <button onclick="toggleModal('signupModal')" 
+                            class="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800">
+                        Sign Up
+                    </button>
+                </div>
+                
+                <!-- User Menu (hidden by default) -->
+                <div id="userMenu" class="hidden space-x-2">
+                    <span class="text-white">Welcome, User!</span>
+                    <button onclick="handleLogout()" 
+                            class="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!--cart button-->
+    <button onclick="toggleModal('cartModal')" class="relative">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        <span id="cartCount" 
+              class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            0
+        </span>
+    </button>
+    <div id="notification" 
+        class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
+    </div>
+    <!-- Hero Section -->
+    <header class="bg-green-500 text-white py-20">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-4xl font-bold mb-4">Connect Directly with Local Farmers</h2>
+            <p class="text-xl mb-8">Fresh produce from farm to store. Quality guaranteed.</p>
+            <div class="space-x-4">
+                <button class="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-green-100">
+                    I'm a Farmer
+                </button>
+                <button class="bg-green-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-800">
+                    I'm a Retailer
+                </button>
+            </div>
+        </div>
+    </header>
+
+<!-- Farm Story Section >
+<section id="story" class="py-16 reveal">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Farm Story</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-4">
+                <p class="text-gray-600 leading-relaxed">
+                    Share your farm's story and connect with retailers who value quality produce.
+                </p>
+                <form onsubmit="submitFarmerInfo(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">Farm Name</label>
+                        <input type="text" name="farmName" required
+                               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Your Story</label>
+                        <textarea name="story" rows="4" required
+                                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-green-500"></textarea>
+                    </div>
+                    <button type="submit" 
+                            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                        Share Your Story
+                    </button>
+                </form>
+            </div>
+            <div>
+                <img src="./images/farm-story.jpg" alt="Farm Story" 
+                     class="rounded-lg shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+<-->
+<!-- Statistics Section with Counter >
+<section class="bg-green-600 text-white py-16 reveal">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="p-6">
+                <div class="text-4xl font-bold mb-2" data-count="500">0</div>
+                <div class="text-xl">Active Farmers</div>
+            </div>
+            <div class="p-6">
+                <div class="text-4xl font-bold mb-2" data-count="1000">0</div>
+                <div class="text-xl">Products Listed</div>
+            </div>
+            <div class="p-6">
+                <div class="text-4xl font-bold mb-2" data-count="250">0</div>
+                <div class="text-xl">Retail Partners</div>
+            </div>
+        </div>
+    </div>
+</section>
+<-->
+<!-- Testimonials Section >
+<section class="py-16 reveal">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">What Our Users Say</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="flex items-center mb-4">
+                    <img src="./images/farmer1.jpg" alt="Farmer" 
+                         class="w-12 h-12 rounded-full mr-4">
+                    <div>
+                        <h4 class="font-bold">John Smith</h4>
+                        <p class="text-gray-600">Organic Farmer</p>
+                    </div>
+                </div>
+                <p class="text-gray-600">"This platform has transformed how I connect with retailers. My sales have increased by 50%!"</p>
+            </div>
+            <-->
+            <!-- Add more testimonials similarly -->
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section >
+<section class="bg-gray-100 py-16 reveal">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-8">Stay Updated</h2>
+        <form class="max-w-md mx-auto">
+            <div class="flex gap-4">
+                <input type="email" placeholder="Enter your email" 
+                       class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-green-500">
+                <button type="submit" 
+                        class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                    Subscribe
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+<-->
+<!-- Add a scroll to top button -->
+<button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+        class="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700">
+    ↑
+</button>
+
+    <!-- Featured Products -->
+    <section id="products" class="py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center mb-12">Featured Products</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Product Card 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="./oveg.jpeg" alt="Fresh Vegetables" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold text-xl mb-2">Organic Vegetables</h4>
+                        <p class="text-gray-600">Fresh, locally grown vegetables from certified organic farms.</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$2.99/kg</span>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                Contact Farmer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="./ofruit.jpg" alt="Fresh Fruits" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold text-xl mb-2">Seasonal Fruits</h4>
+                        <p class="text-gray-600">Hand-picked fruits at peak ripeness for maximum freshness.</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$3.99/kg</span>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                Contact Farmer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="./ocrop.jpg" alt="Fresh Grains" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold text-xl mb-2">Organic Grains</h4>
+                        <p class="text-gray-600">Sustainably grown grains perfect for wholesale purchase.</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$1.99/kg</span>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                Contact Farmer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center mb-12">How It Works</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-4xl text-green-600 mb-4">1</div>
+                    <h4 class="font-bold text-xl mb-2">Create Profile</h4>
+                    <p class="text-gray-600">Sign up as a farmer or retailer and create your profile</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-4xl text-green-600 mb-4">2</div>
+                    <h4 class="font-bold text-xl mb-2">Connect</h4>
+                    <p class="text-gray-600">Browse products or list your produce for sale</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="text-4xl text-green-600 mb-4">3</div>
+                    <h4 class="font-bold text-xl mb-2">Trade</h4>
+                    <p class="text-gray-600">Negotiate prices and complete transactions securely</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section id="contact" class="py-16">
+        <div class="container mx-auto px-4 max-w-2xl">
+            <h3 class="text-3xl font-bold text-center mb-12">Contact Us</h3>
+            <form class="bg-white rounded-lg shadow-md p-8">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="name">Name</label>
+                    <input type="text" id="name" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="email">Email</label>
+                    <input type="email" id="email" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="message">Message</label>
+                    <textarea id="message" rows="4" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500"></textarea>
+                </div>
+                <button class="w-full bg-green-600 text-white px-6 py-3 rounded font-bold hover:bg-green-700">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="font-bold text-xl mb-4">Krishi Raah</h4>
+                    <p>Connecting farmers and retailers for a sustainable future.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xl mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="hover:text-green-200">Home</a></li>
+                        <li><a href="#products" class="hover:text-green-200">Products</a></li>
+                        <li><a href="#farmers" class="hover:text-green-200">Farmers</a></li>
+                        <li><a href="#contact" class="hover:text-green-200">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xl mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li>Email: bytecrew0@gmail.com</li>
+                        <li>Phone: (+91) 123-4567</li>
+                        <li>Address: Palghar, Maharashtra</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-green-700 text-center">
+                <p>&copy; 2024 Krishi Raah. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- Login Modal -->
+<div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg max-w-md w-full">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Login</h2>
+            <button onclick="toggleModal('loginModal')" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 mb-2" for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" required
+                       class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-2" for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" required
+                       class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+            </div>
+            <button type="submit" 
+                    class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                Login
+            </button>
+        </form>
+        <p class="mt-4 text-center text-gray-600">
+            Don't have an account? 
+            <button onclick="toggleModal('loginModal'); toggleModal('signupModal')" 
+                    class="text-green-600 hover:underline">
+                Sign up
+            </button>
+        </p>
+    </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="signupModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg max-w-md w-full">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Sign Up</h2>
+            <button onclick="toggleModal('signupModal')" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <form onsubmit="handleSignup(event)" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 mb-2" for="signupName">Full Name</label>
+                <input type="text" id="signupName" required
+                       class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-2" for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" required
+                       class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-2" for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" required
+                       class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-2" for="userType">I am a:</label>
+                <select id="userType" required
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:border-green-500">
+                    <option value="farmer">Farmer</option>
+                    <option value="retailer">Retailer</option>
+                </select>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                Sign Up
+            </button>
+        </form>
+        <p class="mt-4 text-center text-gray-600">
+            Already have an account? 
+            <button onclick="toggleModal('signupModal'); toggleModal('loginModal')" 
+                    class="text-green-600 hover:underline">
+                Login
+            </button>
+        </p>
+    </div>
+</div>
+<!-- Add this modal component before the closing </body> tag -->
+<div id="cartModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg max-w-2xl w-full">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Shopping Cart</h2>
+            <button onclick="toggleModal('cartModal')" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        
+        <div id="cartItems" class="max-h-96 overflow-y-auto">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+        
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <div id="cartTotal" class="text-xl font-bold text-right mb-4">
+                Total: $0.00
+            </div>
+            <div class="flex gap-4">
+                <button onclick="cart.checkout()" 
+                        class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                    Checkout
+                </button>
+                <button onclick="toggleModal('cartModal')" 
+                        class="flex-1 bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300">
+                    Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modify your product cards to include "Add to Cart" buttons -->
+<!-- Example product card modification -->
+<button onclick="cart.addItem({
+    id: 'product1',
+    name: 'Organic Vegetables',
+    price: 2.99,
+    image: '/api/placeholder/400/300'
+})" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    Add to Cart
+</button>
+</body>
+</html>
